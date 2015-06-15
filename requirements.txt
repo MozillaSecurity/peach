@@ -1,0 +1,5 @@
+Twisted==14.0.0
+lxml==3.3.5
+psutil==2.1.1
+pyasn1==0.1.7
+tlslite==0.4.6
