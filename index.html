@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Peach by MozillaSecurity</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Peach</h1>
+      <h2 class="project-tagline">Peach is a fuzzing framework which uses a DSL for building fuzzers and an observer based architecture to execute and monitor them.</h2>
+      <a href="https://github.com/MozillaSecurity/peach" class="btn">View on GitHub</a>
+      <a href="https://github.com/MozillaSecurity/peach/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/MozillaSecurity/peach/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
+
+    <section class="main-content">
+      <p><img src="http://people.mozilla.org/%7Ecdiehl/img/peach.png" alt="Peach Logo" title="Peach Logo"></p>
+
+<p>MozPeach is a fork of Peach v2.7 and is actively maintained by Mozilla Security. With support from our community and partnerships our goal is to continue to deliver Peach as an open source product with Python compatibility and new features.</p>
+
+<p>Our focus is on usability, speed and fewer dependencies. We have also begun work on Python 3 support, replaced deprecated Python dependencies, switched the XML back-end, added a new configuration system, simplified code and much more.</p>
+
+<h3>
+<a id="setup" class="anchor" href="#setup" aria-hidden="true"><span class="octicon octicon-link"></span></a>Setup</h3>
+
+<pre><code>pip install virtualenv
+pip install virtualenvwrapper
+
+git clone --depth=1 https://github.com/mozillasecurity/peach
+
+cd peach
+git clone --depth=1 https://github.com/mozillasecurity/pits Pits
+python Peach/Utilities/userdata.py -sync
+
+mkvirtualenv -r requirements.txt peach
+</code></pre>
+
+<p>or </p>
+
+<pre><code>workon peach
+</code></pre>
+
+<h3>
+<a id="fundamentals" class="anchor" href="#fundamentals" aria-hidden="true"><span class="octicon octicon-link"></span></a>Fundamentals</h3>
+
+<p>Peach uses XML based "pits" as configuration files. There are two types of pits which we will briefly describe here.</p>
+
+<p><strong>Pit: Data Model</strong></p>
+
+<p>A data-model pit is an XML description of a specification and is required to parse any kind of input into an in-memory XML tree. Peach then uses that tree to generate fuzzed output.</p>
+
+<p><strong>Pit: Target</strong></p>
+
+<p>The target pit is used to define how the target process will get fuzzed, how it will be monitored for suspicious behavior and how to deal with results.</p>
+
+<p>It is optional whether you place everything into one pit however not doing so will simplify working with multiple targets, different hosts and reusing pits. Following the data model/target pit practice will allow the reuse of data model pits across projects.</p>
+
+<h3>
+<a id="examples" class="anchor" href="#examples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Examples</h3>
+
+<h5>
+<a id="run" class="anchor" href="#run" aria-hidden="true"><span class="octicon octicon-link"></span></a>Run</h5>
+
+<pre><code>./peach.py -pit Pits/&lt;component&gt;/&lt;format&gt;/&lt;name&gt;.xml -target Pits/Targets/firefox.xml -run Browser
+</code></pre>
+
+<p><strong>HINT</strong>: You can set related configuration values for both pits from the command-line by using the -macros switch.</p>
+
+<h5>
+<a id="debug" class="anchor" href="#debug" aria-hidden="true"><span class="octicon octicon-link"></span></a>Debug</h5>
+
+<pre><code>./peach.py -pit Pits/&lt;component&gt;/&lt;format&gt;/&lt;name&gt;.xml -1 -debug | less -R
+</code></pre>
+
+<p><strong>NOTE</strong>: This will show a very verbose output of the parsing process. To see only the results of the parsing process for each element you can add: "| grep Rating | less -R"</p>
+
+<h3>
+<a id="help-menu" class="anchor" href="#help-menu" aria-hidden="true"><span class="octicon octicon-link"></span></a>Help Menu</h3>
+
+<pre><code>% ./peach.py -h
+usage: peach.py [-h] [-pit path] [-run name]
+                [-analyzer ANALYZER [ANALYZER ...]] [-parser PARSER]
+                [-target TARGET] [-macros MACROS [MACROS ...]] [-seed #]
+                [-debug] [-new] [-1] [-range # #] [-test] [-count] [-skipto #]
+                [-parallel # #] [-agent # #] [-logging #]
+                [-check model samples] [-verbose] [-clean] [-version]
+
+Peach Runtime
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -pit path             pit file
+  -run name             run name
+  -analyzer ANALYZER [ANALYZER ...]
+                        load analyzer.
+  -parser PARSER        use specific parser.
+  -target TARGET        select a target pit.
+  -macros MACROS [MACROS ...]
+                        override configuration macros
+  -seed #               seed
+  -debug                turn on debugging. (default: False)
+  -new                  use new relations.
+  -1                    run single test case.
+  -range # #            run range of test cases.
+  -test                 validate pit file.
+  -count                count test cases for deterministic strategies.
+  -skipto #             skip to a test case number.
+  -parallel # #         use parallelism.
+  -agent # #            start agent.
+  -logging #            verbosity level of logging
+  -check model samples  validate a data model against a set of samples.
+  -verbose              turn verbosity on. (default: False)
+  -clean                remove python object files.
+  -version              show program's version number and exit
+</code></pre>
+
+<h3>
+<a id="resources" class="anchor" href="#resources" aria-hidden="true"><span class="octicon octicon-link"></span></a>Resources</h3>
+
+<p>Resources which aid in building a pit based on the grammar of a file format:</p>
+
+<pre><code>* http://www.sweetscape.com/010editor/templates/
+* http://www.synalysis.net/formats.xml
+</code></pre>
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/MozillaSecurity/peach">Peach</a> is maintained by <a href="https://github.com/MozillaSecurity">MozillaSecurity</a>.</span>
+
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>
+
