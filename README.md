@@ -12,7 +12,6 @@ Our focus is on usability, speed and fewer dependencies. We have also begun work
     git clone --depth=1 https://github.com/mozillasecurity/peach
 
     cd peach
-    git clone --depth=1 https://github.com/mozillasecurity/pits Pits
     python Peach/Utilities/userdata.py -sync
 
     mkvirtualenv -r requirements.txt peach
