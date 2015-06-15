@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Peach version="1.0"
+       author="Christoph Diehl"
+       description="Target description for common console applications">
+
+    <Configuration>
+        <Macro name="TestName" value="ConsoleAppTest"/>
+        <Macro name="LinuxProcessWatcherEnabled" value="True"/>
+        <Macro name="MacOSProcessWatcherEnabled" value="True"/>
+        <Macro name="DefaultConsoleApp" value="/Users/cdiehl/Documents/repos/openh264/h264dec"/>
+        <Macro name="CommandLineArguments" value="/tmp/fuzzed.h264.decoded"/>
+        <Macro name="TestCase" value="/tmp/fuzzed.h264"/>
+        <Macro name="ASanSymbolizer" value="/Users/cdiehl/Documents/repos/llvm/r233758/build/bin/llvm-symbolizer"/>
+        <Macro name="ASanOptions" value="redzone=16:check_malloc_usable_size=0:replace_intrin=0:alloc_dealloc_mismatch=0:strict_memcmp=0:detect_stack_use_after_return=1:max_uar_stack_size_log=17:check_initialization_order=1:allocator_may_return_null=1:strict_init_order=1:fast_unwind_on_fatal=1"/>
+        <Macro name="ProcessEnvironment" value=""/>
+        <Macro name="Heartbeat" value="0.0"/>
+    </Configuration>
+
+    <Data name="FileSample" fileName="$FileSamplePath$" maxFileSize="$FileSampleMaxFileSize$"/>
+
+    <StateModel name="ConsoleAppStateModel" initialState="Initial">
+        <State name="Initial">
+            <Action name="Output" type="output">
+                <DataModel ref="$DataModel$"/>
+                <Data name="Sample" ref="FileSample"/>
+            </Action>
+            <Action type="close"/>
+            <Action type="call" method="ScoobySnacks"/>
+        </State>
+    </StateModel>
+
+    <Agent name="ConsoleAppAgent" location="http://127.0.0.1:$TCPPort:AgentPort$" password="1q2w3e">
+        <Import from="Peach.Agent" import="process"/>
+        <Monitor name="MacOSConsoleProcessWatcher" class="process.ASanConsoleMonitor" enabled="$MacOSProcessWatcherEnabled$" platform="darwin">
+            <Param name="Command" value="$DefaultConsoleApp$"/>
+            <Param name="Arguments" value="$TestCase$ $CommandLineArguments$"/>
+            <Param name="Environment" value="$ProcessEnvironment$"/>
+            <Param name="ASanSymbolizer" value="$ASanSymbolizer$"/>
+        </Monitor>
+        <Monitor name="LinuxConsoleProcessWatcher" class="process.ASanConsoleMonitor" enabled="$LinuxProcessWatcherEnabled$" platform="linux2">
+            <Param name="Command" value="$DefaultConsoleApp$"/>
+            <Param name="Arguments" value="$TestCase$ $CommandLineArguments$"/>
+            <Param name="Environment" value="$ProcessEnvironment$"/>
+            <Param name="ASanSymbolizer" value="$ASanSymbolizer$"/>
+        </Monitor>
+    </Agent>
+
+    <Test name="ConsoleAppTest">
+        <Exclude />
+        <Agent ref="ConsoleAppAgent"/>
+        <Strategy class="$Strategy$" params="$StrategyParams$"/>
+        <StateModel ref="ConsoleAppStateModel"/>
+        <Publisher name="ConsoleAppPublisher" class="file.FileWriterLauncher">
+            <Param name="filename" value="$TestCase$"/>
+            <Param name="debugger" value="true"/>
+            <Param name="waitTime" value="$Heartbeat$"/>
+        </Publisher>
+    </Test>
+
+	<Run name="DefaultRun" description="Run (Console)">
+        <Test ref="$TestName$"/>
+        <Logger class="logger.Filesystem">
+            <Param name="path" value="Logs/$PitName$"/>
+        </Logger>
+        <Logger name="FuzzManagerLogger" class="logger.FuzzManager">
+            <Param name="TargetBinary" value="$DefaultConsoleApp$"/>
+        </Logger>
+    </Run>
+
+</Peach>

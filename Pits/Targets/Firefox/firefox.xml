@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Peach version="1.0"
+       author="Christoph Diehl"
+       description="Target description for Firefox">
+
+    <Import from="Peach.Publishers" import="websocket"/>
+
+    <Configuration>
+        <Macro name="TestName" value="BrowserTest"/>
+        <Macro name="LinuxProcessWatcherEnabled" value="True"/>
+        <Macro name="MacOSProcessWatcherEnabled" value="True"/>
+        <Macro name="DefaultBrowser" value="/Users/$HOME$/Nightly.app/Contents/MacOS/firefox"/>
+        <Macro name="CommandLineArguments" value="-no-remote -height 512 -width 512"/>
+        <Macro name="DefaultFirefoxPrefs" value="Resources/Settings/Firefox/prefs.js"/>
+        <Macro name="ASanSymbolizer" value="/Users/cdiehl/dev/repos/llvm/build/bin/llvm-symbolizer"/>
+        <Macro name="ASanOptions" value="redzone=16:check_malloc_usable_size=0:replace_intrin=0:alloc_dealloc_mismatch=0:strict_memcmp=0:detect_stack_use_after_return=0:max_uar_stack_size_log=17:check_initialization_order=1:allocator_may_return_null=1:strict_init_order=1:fast_unwind_on_fatal=1"/>
+        <Macro name="ProcessEnvironment" value=""/>
+        <Macro name="PrintProcessOutput" value="False"/>
+        <Macro name="Heartbeat" value="0.0"/>
+    </Configuration>
+
+    <Data name="FileSample" fileName="$FileSamplePath$" maxFileSize="$FileSampleMaxFileSize$"/>
+
+    <StateModel name="BrowserStateModel" initialState="Initial">
+        <State name="Initial">
+            <Action name="Output" type="output">
+                <DataModel ref="$DataModel$"/>
+                <Data name="Sample" ref="FileSample"/>
+            </Action>
+        </State>
+    </StateModel>
+
+    <Agent name="BrowserAgent" location="http://127.0.0.1:$TCPPort:AgentPort$" password="1q2w3e">
+        <Import from="Peach.Agent" import="process"/>
+        <Monitor name="LinuxProcessWatcher" class="process.ProcessID" enabled="$LinuxProcessWatcherEnabled$" platform="linux2">
+            <Param name="Command" value="$DefaultBrowser$"/>
+            <Param name="Arguments" value="-P $FirefoxProfile:profile1$ $CommandLineArguments$ Peach/Utilities/JS/Loader/files.html?host=127.0.0.1&amp;port=$TCPPort:WebSocketPort$"/>
+            <Param name="Environment" value="$ProcessEnvironment$"/>
+            <Param name="PrintSubprocessOutput" value="$PrintProcessOutput$"/>
+            <Param name="ASanSymbolizer" value="$ASanSymbolizer$"/>
+            <Param name="ASanOptions" value="$ASanOptions$"/>
+            <Param name="Heartbeat" value="$Heartbeat$"/>
+        </Monitor>
+        <Monitor name="MacOSProcessWatcher" class="process.ProcessID" enabled="$MacOSProcessWatcherEnabled$" platform="darwin">
+            <Param name="Command" value="$DefaultBrowser$"/>
+            <Param name="Arguments" value="-P $FirefoxProfile:profile1$ $CommandLineArguments$ Peach/Utilities/JS/Loader/files.html?host=127.0.0.1&amp;port=$TCPPort:WebSocketPort$"/>
+            <Param name="Environment" value="$ProcessEnvironment$"/>
+            <Param name="PrintSubprocessOutput" value="$PrintProcessOutput$"/>
+            <Param name="ASanSymbolizer" value="$ASanSymbolizer$"/>
+            <Param name="ASanOptions" value="$ASanOptions$"/>
+            <Param name="Heartbeat" value="$Heartbeat$"/>
+        </Monitor>
+    </Agent>
+    <!---
+    <Test name="HttpBrowserTest">
+        <Agent ref="BrowserAgent"/>
+        <Strategy class="$Strategy$" params="$StrategyParams$"/>
+        <StateModel ref="BrowserStateModel"/>
+        <Publisher name="BrowserPublisher" class="httpserver.HttpHeaderPublisher">
+            <Param name="host" value="localhost"/>
+            <Param name="port" value="$TCPPort:WebSocketPort$"/>
+            <Param name="template" value="$WebSocketTemplate$"/>
+            <Param name="publish" value="base64"/>
+        </Publisher>
+    </Test>
+    -->
+    <Test name="BrowserTest" description="N/A">
+        <Agent ref="BrowserAgent"/>
+        <Strategy class="$Strategy$" params="$StrategyParams$"/>
+        <StateModel ref="BrowserStateModel"/>
+        <Publisher name="BrowserPublisher" class="websocket.WebSocketFilePublisher">
+            <Param name="host" value="localhost"/>
+            <Param name="port" value="$TCPPort:WebSocketPort$"/>
+            <Param name="template" value="$WebSocketTemplate$"/>
+            <Param name="publish" value="base64"/>
+        </Publisher>
+    </Test>
+
+    <Run name="DefaultRun" description="Run (Browser)">
+        <Test ref="$TestName$"/>
+        <Logger name="FilesystemLogger" class="logger.Filesystem">
+            <Param name="path" value="Logs/$PitName$"/>
+        </Logger>
+    </Run>
+
+</Peach>

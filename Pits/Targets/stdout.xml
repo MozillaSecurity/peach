@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Peach version="1.0"
+       author="Christoph Diehl"
+       description="Target description for debugging PeachPits">
+
+    <Configuration>
+        <Macro name="TestName" value="StdoutTest"/>
+        <Macro name="PublisherName" value="StdoutHex"/>
+    </Configuration>
+
+    <Data name="FileSample" fileName="$FileSamplePath$" maxFileSize="$FileSampleMaxFileSize$"/>
+
+    <StateModel name="StdoutStateModel" initialState="Initial">
+        <State name="Initial">
+            <Action name="Output" type="output">
+                <DataModel ref="$DataModel$"/>
+                <Data name="Sample" ref="FileSample"/>
+            </Action>
+            <Action type="close"/>
+        </State>
+    </StateModel>
+
+    <Test name="StdoutTest">
+        <Strategy class="$Strategy$" params="$StrategyParams$"/>
+        <StateModel ref="StdoutStateModel"/>
+        <Publisher class="stdout.$PublisherName$"/>
+    </Test>
+
+    <Run name="DefaultRun" description="Run (Console)">
+        <Test ref="$TestName$"/>
+        <Logger class="logger.Filesystem">
+            <Param name="path" value="Logs/$PitName$"/>
+        </Logger>
+    </Run>
+
+</Peach>

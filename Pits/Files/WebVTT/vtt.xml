@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Peach version="1.0"
+       author="Raymond Forbes,Christoph Diehl"
+       description="WebVTT"
+       documentation="http://dev.w3.org/html5/webvtt/#the-webvtt-file-format">
+
+    <Include ns="default" src="file:defaults.xml"/>
+
+    <Configuration>
+        <Macro name="PitName" value="WebVTT"/>
+        <Macro name="DataModel" value="StringTokenAnalyzer"/>s
+        <Macro name="Strategy" value="rand.RandomMutationStrategy"/>
+        <Macro name="StrategyParams" value="SwitchCount=1000,MaxFieldsToMutate=6"/>
+        <Macro name="FileSamplePath" value="Resources/Samples/vtt/*.vtt"/>
+        <Macro name="FileSampleMaxFileSize" value="-1"/>
+        <Macro name="WebSocketTemplate" value="Resources/Templates/WebVTT/index.html"/>
+    </Configuration>
+
+    <DataModel name="_Timestamp">
+        <String name="Hour">
+            <Hint name="NumericalString" value="true"/>
+        </String>
+        <String name="Seperator" value=":" token="true"/>
+        <String name="Minute">
+            <Hint name="NumericalString" value="true"/>
+        </String>
+        <String name="Period" value="." token="true"/>
+        <String name="Second">
+            <Hint name="NumericalString" value="true"/>
+        </String>
+    </DataModel>
+
+    <DataModel name="Number">
+        <Block name="isSigned" minOccurs="0" maxOccurs="1">
+            <String name="Signed" token="true" length="1" value="-"/>
+        </Block>
+        <String name="Number">
+            <Hint name="NumericalString" value="true"/>
+        </String>
+        <Block name="isPercentage" minOccurs="0" maxOccurs="1">
+            <String name="Percent" token="true" length="1" value="%"/>
+        </Block>
+    </DataModel>
+
+    <DataModel name="_Cue">
+        <Block name="TimestampS" ref="_Timestamp"/>
+        <String value=" " token="true"/>
+        <String name="Arrow"/>
+        <String value=" " token="true"/>
+        <Block name="SettingsBlock" minOccurs="1" maxOccurs="1">
+            <Choice name="CheckSettings">
+                <Block name="HasSettings">
+                    <Block name="TimestampE" ref="_Timestamp">
+                        <String name="Second" constraint="value.find('\n') == -1"/>
+                    </Block>
+                    <String value=" " token="true"/>
+                    <Block name="CueSettings" minOccurs="1" maxOccurs="64">
+                        <Choice name="Choose">
+                            <Block name="Vertical">
+                                <String name="Name" value="vertical" token="true"/>
+                                <String name="Sep" value=":" token="true"/>
+                                <String name="Value">
+                                    <Hint name="ValidValues" value="lr;rl"/>
+                                </String>
+                            </Block>
+                            <Block name="Line">
+                                <String name="Name" value="line" token="true"/>
+                                <String name="Sep" value=":" token="true"/>
+                                <Block name="Value" ref="Number"/>
+                            </Block>
+                            <Block name="Position">
+                                <String name="Name" value="position" token="true"/>
+                                <String name="Sep" value=":" token="true"/>
+                                <Block name="Value" ref="Number"/>
+                            </Block>
+                            <Block name="Size">
+                                <String name="Name" value="size" token="true"/>
+                                <String name="Sep" value=":" token="true"/>
+                                <Block name="Value" ref="Number"/>
+                            </Block>
+                            <Block name="Align">
+                                <String name="Name" value="align" token="true"/>
+                                <String name="Sep" value=":" token="true"/>
+                                <String name="Value">
+                                    <Hint name="ValidValues" value="start;middle;end;left;right"/>
+                                </String>
+                            </Block>
+                            <Block minOccurs="0" maxOccurs="2">
+                                <Choice>
+                                    <Block name="A">
+                                        <String name="Name" value="A" token="true"/>
+                                        <String name="Sep" value=":" token="true"/>
+                                        <String name="Value">
+                                            <Hint name="ValidValues" value="start;end"/>
+                                        </String>
+                                        <String value=" " token="true"/>
+                                    </Block>
+                                    <Block name="S">
+                                        <String name="Name" value="S" token="true"/>
+                                        <String name="Sep" value=":" token="true"/>
+                                        <Block name="Value" ref="Number"/>
+                                    </Block>
+                                </Choice>
+                            </Block>
+                        </Choice>
+                        <String value="\n" token="true"/>
+                    </Block>
+                </Block>
+                <Block name="NoSettings">
+                    <Block name="TimestampE" ref="_Timestamp"/>
+                    <String value="\n" token="true"/>
+                </Block>
+            </Choice>
+        </Block>
+        <String name="Payload"/>
+        <String name="LF" value="\n\n" token="true"/>
+    </DataModel>
+
+    <DataModel name="_NOTES">
+        <String name="Notes" value="NOTE" token="true"/>
+        <String name="NotesData"/>
+    </DataModel>
+
+    <DataModel name="File">
+        <String name="Identifier" value="WEBVTT" token="true"/>
+        <Block minOccurs="0" maxOccurs="2">
+            <String name="LF" value="\n" token="true"/>
+        </Block>
+        <Block minOccurs="1" maxOccurs="64">
+            <Choice>
+                <Block name="Cue" ref="_Cue"/>
+                <!--<Block name="NOTES" ref="_NOTES"/>-->
+            </Choice>
+        </Block>
+    </DataModel>
+
+    <DataModel name="StringTokenAnalyzer">
+        <String name="Content" analyzer="stringtoken.StringTokenAnalyzer" type="wchar"/>
+    </DataModel>
+</Peach>

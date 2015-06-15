@@ -72,6 +72,5 @@ target/
 
 # Custom
 Logs/
-Pits/
 Resources/
 Peach/Utilities/FuzzManager/

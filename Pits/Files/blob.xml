@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Peach version="1.0"
+       author="Christoph Diehl"
+       description="A data model for dumb fuzzing">
+
+    <Include ns="default" src="file:defaults.xml"/>
+
+    <Configuration>
+        <Macro name="PitName" value="Blob"/>
+        <Macro name="DataModel" value="File"/>
+        <Macro name="Strategy" value="rand.RandomMutationStrategy"/>
+        <Macro name="StrategyParams" value="SwitchCount=1000,MaxFieldsToMutate=4"/>
+        <Macro name="FileSamplePath" value=""/> <!-- set it with the -macros parameter -->
+        <Macro name="FileSampleMaxFileSize" value="-1"/>
+        <Macro name="WebSocketTemplate" value=""/> <!-- set it with the -macros parameter -->
+    </Configuration>
+
+    <DataModel name="BinaryFileAnalyzer">
+        <Blob analyzer="binary.Binary"/>
+    </DataModel>
+
+    <DataModel name="StringFileAnalyzer">
+        <String analyzer="stringtoken.StringTokenAnalyzer"/>
+    </DataModel>
+
+    <DataModel name="XmlFileAnalyzer">
+        <String analyzer="xml.XmlAnalyzer"/>
+    </DataModel>
+
+    <DataModel name="File">
+        <Blob/>
+    </DataModel>
+</Peach>

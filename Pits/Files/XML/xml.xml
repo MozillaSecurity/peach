@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Peach version="1.0"
+       author="Christoph Diehl"
+       description="XML">
+
+    <Include ns="default" src="file:defaults.xml"/>
+
+    <Configuration>
+        <Macro name="PitName" value="XML"/>
+        <Macro name="DataModel" value="File"/>
+        <Macro name="Strategy" value="rand.RandomMutationStrategy"/>
+        <Macro name="StrategyParams" value="SwitchCount=1000,MaxFieldsToMutate=8"/>
+        <Macro name="FileSamplePath" value="Resources/Samples/svg/*.*"/>
+        <Macro name="FileSampleMaxFileSize" value="-1"/>
+        <Macro name="WebSocketTemplate" value="Resources/Templates/XML/index.html"/>
+    </Configuration>
+
+    <DataModel name="File">
+        <String name="Content" analyzer="xml.XmlAnalyzer"/>
+    </DataModel>
+
+</Peach>
