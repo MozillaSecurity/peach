@@ -1,6 +1,6 @@
 ![Peach Logo](http://people.mozilla.org/~cdiehl/img/peach.png "Peach Logo")
 
-MozPeach is a fork of Peach v2.7 and is actively maintained by Mozilla Security. With support from our community and partnerships our goal is to continue to deliver Peach as an open source product with Python compatibility and new features.
+MozPeach is a fork of [Peach v2.7](http://www.peachfuzzer.com) and is actively maintained by Mozilla Security. With support from our community and partnerships our goal is to continue to deliver Peach as an open source product with Python compatibility and new features.
 
 Our focus is on usability, speed and fewer dependencies. We have also begun work on Python 3 support, replaced deprecated Python dependencies, switched the XML back-end, added a new configuration system, simplified code and much more.
 
