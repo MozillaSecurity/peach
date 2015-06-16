@@ -21,7 +21,7 @@
     <section class="main-content">
       <p><img src="http://people.mozilla.org/%7Ecdiehl/img/peach.png" alt="Peach Logo" title="Peach Logo"></p>
 
-<p>MozPeach is a fork of Peach v2.7 and is actively maintained by Mozilla Security. With support from our community and partnerships our goal is to continue to deliver Peach as an open source product with Python compatibility and new features.</p>
+<p>MozPeach is a fork of <a href="http://www.peachfuzzer.com">Peach v2.7</a> and is actively maintained by Mozilla Security. With support from our community and partnerships our goal is to continue to deliver Peach as an open source product with Python compatibility and new features.</p>
 
 <p>Our focus is on usability, speed and fewer dependencies. We have also begun work on Python 3 support, replaced deprecated Python dependencies, switched the XML back-end, added a new configuration system, simplified code and much more.</p>
 
@@ -34,7 +34,6 @@ pip install virtualenvwrapper
 git clone --depth=1 https://github.com/mozillasecurity/peach
 
 cd peach
-git clone --depth=1 https://github.com/mozillasecurity/pits Pits
 python Peach/Utilities/userdata.py -sync
 
 mkvirtualenv -r requirements.txt peach
