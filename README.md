@@ -6,6 +6,12 @@ Our focus is on usability, speed and fewer dependencies. We have also begun work
 
 
 ###Setup
+
+#####Prerequisites for Ubuntu
+
+    sudo apt-get --yes --quiet install libxml2-dev libxslt1-dev lib32z1-dev
+
+#####General 
     pip install virtualenv
     pip install virtualenvwrapper
 
