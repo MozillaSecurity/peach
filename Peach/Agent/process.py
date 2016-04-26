@@ -741,7 +741,7 @@ class ASanConsoleMonitor(Monitor):
             bucket["stderr.txt"] = "".join(self.stderr)
         meta = {
             "environ": os.environ.data,
-            "command": self.arguments
+            "command": self.arguments,
             "returncode": self.process.returncode
         }
         bucket["meta.txt"] = json.dumps(dict(meta))
