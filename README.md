@@ -4,8 +4,11 @@ MozPeach is a fork of [Peach v2.7](http://www.peachfuzzer.com) and is actively m
 
 Our focus is on usability, speed and fewer dependencies. We have also begun work on Python 3 support, replaced deprecated Python dependencies, switched the XML back-end, added a new configuration system, simplified code and much more.
 
-
 ###Setup
+
+## Prerequisites for Ubuntu
+sudo apt-get --yes --quiet install libxml2-dev libxslt1-dev lib32z1-dev
+
     pip install virtualenv
     pip install virtualenvwrapper
 
@@ -16,7 +19,7 @@ Our focus is on usability, speed and fewer dependencies. We have also begun work
 
     mkvirtualenv -r requirements.txt peach
 
-or 
+or
 
     workon peach
 
