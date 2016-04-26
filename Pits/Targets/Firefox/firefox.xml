@@ -10,7 +10,7 @@
         <Macro name="TestName" value="BrowserTest"/>
         <Macro name="LinuxProcessWatcherEnabled" value="True"/>
         <Macro name="MacOSProcessWatcherEnabled" value="True"/>
-        <Macro name="DefaultBrowser" value="/Users/$HOME$/Nightly.app/Contents/MacOS/firefox"/>
+        <Macro name="DefaultBrowser" value="/srv/repos/mozilla/mozilla-inbound/ff64-asan-release/dist/Nightly.app/Contents/MacOS/firefox"/>
         <Macro name="CommandLineArguments" value="-no-remote -height 512 -width 512"/>
         <Macro name="DefaultFirefoxPrefs" value="Resources/Settings/Firefox/prefs.js"/>
         <Macro name="ASanSymbolizer" value="/Users/cdiehl/dev/repos/llvm/build/bin/llvm-symbolizer"/>
