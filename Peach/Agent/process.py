@@ -702,6 +702,23 @@ class ASanConsoleMonitor(Monitor):
             self.stdout = stdout
             self.stderr = stderr
 
+        if self.process.returncode < 0:
+            crashSignals = [
+                # POSIX.1-1990 signals
+                signal.SIGILL,
+                signal.SIGABRT,
+                signal.SIGFPE,
+                signal.SIGSEGV,
+                # SUSv2 / POSIX.1-2001 signals
+                signal.SIGBUS,
+                signal.SIGSYS,
+                signal.SIGTRAP,
+        ]
+
+        for crashSignal in crashSignals:
+            if process.returncode == -crashSignal:
+                self.failure = True
+
         if self.failure:
             self._StopProcess()
 
@@ -725,6 +742,7 @@ class ASanConsoleMonitor(Monitor):
         meta = {
             "environ": os.environ.data,
             "command": self.arguments
+            "returncode": self.process.returncode
         }
         bucket["meta.txt"] = json.dumps(dict(meta))
         bucket["Bucket"] = os.path.basename(self.command)
