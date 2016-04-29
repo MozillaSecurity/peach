@@ -696,7 +696,7 @@ class ASanConsoleMonitor(Monitor):
         # Todo: Add timeout= for GUI applications.
         stdout, stderr = self.process.communicate()
 
-        if stderr.find("ERROR: AddressSanitizer: ") != -1 and stderr.find("AddressSanitizer failed to allocate") == -1:
+        if stderr.find("ERROR: AddressSanitizer: ") != -1:# and stderr.find("AddressSanitizer failed to allocate") == -1:
             self.failure = True
             self.sanlog = re.findall(self.asan_regex, stderr, re.DOTALL)[0]
             self.stdout = stdout
@@ -730,8 +730,8 @@ class ASanConsoleMonitor(Monitor):
         return self.failure
 
     def GetMonitorData(self):
-        if not self.failure:
-            return
+        #if not self.failure:
+        #    return
         bucket = {}
         if self.sanlog:
             bucket["auxdat.txt"] = "".join(self.sanlog)
