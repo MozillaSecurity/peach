@@ -523,7 +523,7 @@ class ProcessID(Monitor):
                 print(captured_line.strip("\n"))
             if self.monitor_console:
                 self.console_log.append(captured_line)
-            if not inside_sanitizer_trace and captured_line.find("ERROR: AddressSanitizer") != -1:
+            if not inside_sanitizer_trace and captured_line.find("ERROR: AddressSanitizer") != -1 and stderr.find("AddressSanitizer failed to allocate") == -1:
                 inside_sanitizer_trace = True
             if inside_sanitizer_trace and \
                     (captured_line.find("Stats: ") != -1 or
@@ -696,26 +696,25 @@ class ASanConsoleMonitor(Monitor):
         # Todo: Add timeout= for GUI applications.
         stdout, stderr = self.process.communicate()
 
-        if stderr.find("ERROR: AddressSanitizer: ") != -1 and stderr.find("AddressSanitizer failed to allocate") == -1:
-            self.failure = True
-            self.sanlog = re.findall(self.asan_regex, stderr, re.DOTALL)[0]
-            self.stdout = stdout
-            self.stderr = stderr
-
-        if self.process.returncode < 0:
-            crashSignals = [
-                # POSIX.1-1990 signals
-                signal.SIGILL,
-                signal.SIGABRT,
-                signal.SIGFPE,
-                signal.SIGSEGV,
-                # SUSv2 / POSIX.1-2001 signals
-                signal.SIGBUS,
-                signal.SIGSYS,
-                signal.SIGTRAP,
-        ]
-
-        if not self.failure:
+        if stderr.find("ERROR: AddressSanitizer: ") != -1
+            if stderr.find("AddressSanitizer failed to allocate") == -1:
+                self.failure = True
+                self.sanlog = re.findall(self.asan_regex, stderr, re.DOTALL)[0]
+                self.stdout = stdout
+                self.stderr = stderr
+        else:
+            if self.process.returncode < 0:
+                crashSignals = [
+                    # POSIX.1-1990 signals
+                    signal.SIGILL,
+                    signal.SIGABRT,
+                    signal.SIGFPE,
+                    signal.SIGSEGV,
+                    # SUSv2 / POSIX.1-2001 signals
+                    signal.SIGBUS,
+                    signal.SIGSYS,
+                    signal.SIGTRAP,
+            ]
             for crashSignal in crashSignals:
                 if process.returncode == -crashSignal:
                     self.failure = True
