@@ -718,6 +718,9 @@ class ASanConsoleMonitor(Monitor):
         for crashSignal in crashSignals:
             if process.returncode == -crashSignal:
                 self.failure = True
+                self.sanlog = "Line721"
+                self.stdout = stdout
+                self.stderr = stderr
 
         if self.failure:
             self._StopProcess()
