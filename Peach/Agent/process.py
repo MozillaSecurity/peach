@@ -696,7 +696,7 @@ class ASanConsoleMonitor(Monitor):
         # Todo: Add timeout= for GUI applications.
         stdout, stderr = self.process.communicate()
 
-        if stderr.find("ERROR: AddressSanitizer: ") != -1
+        if stderr.find("ERROR: AddressSanitizer: ") != -1:
             if stderr.find("AddressSanitizer failed to allocate") == -1:
                 self.failure = True
                 self.sanlog = re.findall(self.asan_regex, stderr, re.DOTALL)[0]
