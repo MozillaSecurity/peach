@@ -523,8 +523,9 @@ class ProcessID(Monitor):
                 print(captured_line.strip("\n"))
             if self.monitor_console:
                 self.console_log.append(captured_line)
-            if not inside_sanitizer_trace and captured_line.find("ERROR: AddressSanitizer") != -1 and stderr.find("AddressSanitizer failed to allocate") == -1:
-                inside_sanitizer_trace = True
+            if not inside_sanitizer_trace:
+                if captured_line.find("ERROR: AddressSanitizer") != -1 and stderr.find("AddressSanitizer failed to allocate") == -1:
+                    inside_sanitizer_trace = True
             if inside_sanitizer_trace and \
                     (captured_line.find("Stats: ") != -1 or
                      captured_line.find("ABORTING") != -1 or
@@ -585,11 +586,32 @@ class ProcessID(Monitor):
         time.sleep(self.lookout_time)
         sytem_crash_report = self.get_crash_report(self.system_report_path)
         bucket = {}
-        bucket["auxdat.txt"] = "".join(self.crash_trace)
+
+        if not self.crash_trace:
+            if self.process.returncode < 0:
+                crashSignals = [
+                    # POSIX.1-1990 signals
+                    signal.SIGILL,
+                    signal.SIGABRT,
+                    signal.SIGFPE,
+                    signal.SIGSEGV,
+                    # SUSv2 / POSIX.1-2001 signals
+                    signal.SIGBUS,
+                    signal.SIGSYS,
+                    signal.SIGTRAP,
+            ]
+            for crashSignal in crashSignals:
+                if process.returncode == -crashSignal:
+                    bucket["auxdat.txt"] = "Process exited with signal: %d" % -process.returncode
+        else:
+            bucket["auxdat.txt"] = "".join(self.crash_trace)
+
         if sytem_crash_report:
             bucket["system_crash_report.txt"] = sytem_crash_report
+
         if self.console_log:
-            bucket["console.txt"] = "".join(self.console_log)
+            bucket["stdout.txt"] = "".join(self.console_log[-1000:])
+
         if self.failure:
             meta = {
                 "environ": os.environ.data,
@@ -718,7 +740,7 @@ class ASanConsoleMonitor(Monitor):
             for crashSignal in crashSignals:
                 if process.returncode == -crashSignal:
                     self.failure = True
-                    self.sanlog = "Line721"
+                    self.sanlog = "Process exited with signal: %d" % -process.returncode
                     self.stdout = stdout
                     self.stderr = stderr
 
