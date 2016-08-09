@@ -524,7 +524,7 @@ class ProcessID(Monitor):
             if self.monitor_console:
                 self.console_log.append(captured_line)
             if not inside_sanitizer_trace:
-                if captured_line.find("ERROR: AddressSanitizer") != -1 and stderr.find("AddressSanitizer failed to allocate") == -1:
+                if captured_line.find("ERROR: AddressSanitizer") != -1 and captured_line.find("AddressSanitizer failed to allocate") == -1:
                     inside_sanitizer_trace = True
             if inside_sanitizer_trace and \
                     (captured_line.find("Stats: ") != -1 or
