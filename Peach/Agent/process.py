@@ -587,7 +587,7 @@ class ProcessID(Monitor):
         sytem_crash_report = self.get_crash_report(self.system_report_path)
         bucket = {}
 
-        if not self.crash_trace:
+        if not len(self.crash_trace):
             if self.process.returncode < 0:
                 crashSignals = [
                     # POSIX.1-1990 signals
