@@ -4,29 +4,33 @@ MozPeach is a fork of [Peach v2.7](http://www.peachfuzzer.com) and is actively m
 
 Our focus is on usability, speed and fewer dependencies. We have also begun work on Python 3 support, replaced deprecated Python dependencies, switched the XML back-end, added a new configuration system, simplified code and much more.
 
-###Setup
+### Setup
 
-#####Prerequisites for Ubuntu
+##### Prerequisites for Ubuntu
+```
+sudo apt-get --yes --quiet install libxml2-dev libxslt1-dev lib32z1-dev
+```
 
-    sudo apt-get --yes --quiet install libxml2-dev libxslt1-dev lib32z1-dev
+##### General
+```bash
+pip install virtualenv
+pip install virtualenvwrapper
 
-#####General 
-    pip install virtualenv
-    pip install virtualenvwrapper
+git clone --depth 1 https://github.com/mozillasecurity/peach
 
-    git clone --depth=1 https://github.com/mozillasecurity/peach
+cd peach
+git clone --depth 1 https://github.com/mozillasecurity/fuzzdata
 
-    cd peach
-    python Peach/Utilities/userdata.py -sync
-
-    mkvirtualenv -r requirements.txt peach
+mkvirtualenv -r requirements.txt peach
+```
 
 or
 
-    workon peach
+```bash
+workon peach
+```
 
-
-###Fundamentals
+### Fundamentals
 Peach uses XML based "pits" as configuration files. There are two types of pits which we will briefly describe here.
 
 **Pit: Data Model**
@@ -40,60 +44,63 @@ The target pit is used to define how the target process will get fuzzed, how it 
 It is optional whether you place everything into one pit however not doing so will simplify working with multiple targets, different hosts and reusing pits. Following the data model/target pit practice will allow the reuse of data model pits across projects.
 
 
-###Examples
+### Examples
 
-#####Run
-
-    ./peach.py -pit Pits/<component>/<format>/<name>.xml -target Pits/Targets/firefox.xml -run Browser
+##### Run
+```bash
+./peach.py -pit Pits/<component>/<format>/<name>.xml -target Pits/Targets/firefox.xml -run Browser
+```
 
 **HINT**: You can set related configuration values for both pits from the command-line by using the -macros switch.
 
-#####Debug
-
-    ./peach.py -pit Pits/<component>/<format>/<name>.xml -1 -debug | less -R
+##### Debug
+```bash
+./peach.py -pit Pits/<component>/<format>/<name>.xml -1 -debug | less -R
+```
 
 **NOTE**: This will show a very verbose output of the parsing process. To see only the results of the parsing process for each element you can add: "| grep Rating | less -R"
 
 
-###Help Menu
-    % ./peach.py -h
-    usage: peach.py [-h] [-pit path] [-run name]
-                    [-analyzer ANALYZER [ANALYZER ...]] [-parser PARSER]
-                    [-target TARGET] [-macros MACROS [MACROS ...]] [-seed #]
-                    [-debug] [-new] [-1] [-range # #] [-test] [-count] [-skipto #]
-                    [-parallel # #] [-agent # #] [-logging #]
-                    [-check model samples] [-verbose] [-clean] [-version]
+### Help Menu
+```
+% ./peach.py -h
+usage: peach.py [-h] [-pit path] [-run name]
+                [-analyzer ANALYZER [ANALYZER ...]] [-parser PARSER]
+                [-target TARGET] [-macros MACROS [MACROS ...]] [-seed #]
+                [-debug] [-new] [-1] [-range # #] [-test] [-count] [-skipto #]
+                [-parallel # #] [-agent # #] [-logging #]
+                [-check model samples] [-verbose] [-clean] [-version]
 
-    Peach Runtime
+Peach Runtime
 
-    optional arguments:
-      -h, --help            show this help message and exit
-      -pit path             pit file
-      -run name             run name
-      -analyzer ANALYZER [ANALYZER ...]
-                            load analyzer.
-      -parser PARSER        use specific parser.
-      -target TARGET        select a target pit.
-      -macros MACROS [MACROS ...]
-                            override configuration macros
-      -seed #               seed
-      -debug                turn on debugging. (default: False)
-      -new                  use new relations.
-      -1                    run single test case.
-      -range # #            run range of test cases.
-      -test                 validate pit file.
-      -count                count test cases for deterministic strategies.
-      -skipto #             skip to a test case number.
-      -parallel # #         use parallelism.
-      -agent # #            start agent.
-      -logging #            verbosity level of logging
-      -check model samples  validate a data model against a set of samples.
-      -verbose              turn verbosity on. (default: False)
-      -clean                remove python object files.
-      -version              show program's version number and exit
+optional arguments:
+  -h, --help            show this help message and exit
+  -pit path             pit file
+  -run name             run name
+  -analyzer ANALYZER [ANALYZER ...]
+                        load analyzer.
+  -parser PARSER        use specific parser.
+  -target TARGET        select a target pit.
+  -macros MACROS [MACROS ...]
+                        override configuration macros
+  -seed #               seed
+  -debug                turn on debugging. (default: False)
+  -new                  use new relations.
+  -1                    run single test case.
+  -range # #            run range of test cases.
+  -test                 validate pit file.
+  -count                count test cases for deterministic strategies.
+  -skipto #             skip to a test case number.
+  -parallel # #         use parallelism.
+  -agent # #            start agent.
+  -logging #            verbosity level of logging
+  -check model samples  validate a data model against a set of samples.
+  -verbose              turn verbosity on. (default: False)
+  -clean                remove python object files.
+  -version              show program's version number and exit
+```
 
-
-###Resources
+### Resources
 
 Resources which aid in building a pit based on the grammar of a file format:
 
