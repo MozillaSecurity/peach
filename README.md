@@ -1,4 +1,4 @@
-![Peach Logo](http://people.mozilla.org/~cdiehl/img/peach.png "Peach Logo")
+![Logo](https://github.com/posidron/posidron.github.io/raw/master/static/images/peach.png)
 
 MozPeach is a fork of [Peach v2.7](http://www.peachfuzzer.com) and is actively maintained by Mozilla Security. With support from our community and partnerships our goal is to continue to deliver Peach as an open source product with Python compatibility and new features.
 
